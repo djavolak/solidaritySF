@@ -3,8 +3,6 @@
 namespace App\Repository;
 
 use App\Entity\DamagedEducator;
-use App\Entity\DamagedEducatorPeriod;
-use App\Entity\School;
 use App\Entity\Transaction;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Tools\Pagination\Paginator;
@@ -153,25 +151,6 @@ class TransactionRepository extends ServiceEntityRepository
                 ->setParameter('status', Transaction::STATUS_CONFIRMED);
 
             return (int) $qb->getQuery()->getSingleScalarResult();
-        }, $useCache ? 1.0 : INF);
-    }
-
-    public function getSchoolWithConfirmedTransactions(bool $useCache): array
-    {
-        return $this->cache->get('transaction-getSchoolWithConfirmedTransactions', function (ItemInterface $item) {
-            $item->expiresAfter(86400);
-
-            $qb = $this->createQueryBuilder('t');
-            $qb = $qb->select('s.name, c.name AS cityName, SUM(t.amount) AS totalConfirmedAmount, COUNT(DISTINCT t.accountNumber) AS totalDamagedEducators')
-                ->innerJoin('t.damagedEducator', 'de')
-                ->innerJoin('de.school', 's')
-                ->innerJoin('s.city', 'c')
-                ->andWhere('t.status = :status')
-                ->setParameter('status', Transaction::STATUS_CONFIRMED)
-                ->groupBy('s.id')
-                ->orderBy('c.name', 'ASC');
-
-            return $qb->getQuery()->getResult();
         }, $useCache ? 1.0 : INF);
     }
 

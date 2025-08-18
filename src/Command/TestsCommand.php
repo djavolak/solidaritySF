@@ -31,7 +31,7 @@ class TestsCommand extends Command
         foreach ($commands as $command) {
             $io->section('Running '.implode(' ', $command));
 
-            $process = new Process($command);
+            $process = new Process(command: $command, timeout: 120);
             $process->run(function ($type, $buffer) use ($output) {
                 $output->write($buffer);
             });

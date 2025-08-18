@@ -2,13 +2,9 @@
 
 namespace App\Form;
 
-use App\Entity\City;
 use App\Entity\DamagedEducator;
-use App\Entity\School;
 use App\Form\DataTransformer\AccountNumberTransformer;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -26,36 +22,11 @@ class DamagedEducatorEditType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-//        $schools = $options['entityManager']->getRepository(School::class)
-//            ->createQueryBuilder('s')
-//            ->innerJoin('s.userDelegateSchools', 'uds')
-//            ->where('uds.user = :user')
-//            ->setParameter('user', $options['user'])
-//            ->getQuery()
-//            ->getResult();
-
-//        $schoolChoices = [];
-//        foreach ($schools as $school) {
-//            $schoolChoices[$school->getName().' ('.$school->getCity()->getName().')'] = $school;
-//        }
-
         $builder
             ->add('name', TextType::class, [
                 'label' => 'Ime',
             ])
-//            ->add('school', ChoiceType::class, [
-//                'placeholder' => 1 === count($schoolChoices) ? null : '',
-//                'label' => 'Škola',
-//                'choices' => $schoolChoices,
-//                'choice_value' => 'id',
-//            ])
-//            ->add('city', EntityType::class, [
-//                'class' => City::class,
-//                'placeholder' => '',
-//                'label' => 'Grad (Prebivalište oštećenog)',
-//                'choice_value' => 'id',
-//                'choice_label' => 'name',
-//            ])
+
             ->add('amount', IntegerType::class, [
                 'label' => 'Cifra',
                 'attr' => [

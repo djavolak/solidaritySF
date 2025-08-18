@@ -2,18 +2,10 @@
 
 namespace App\Tests\Controller\Delegate;
 
-use App\DataFixtures\CityFixtures;
 use App\DataFixtures\DamagedEducatorFixtures;
-use App\DataFixtures\DamagedEducatorPeriodFixtures;
-use App\DataFixtures\SchoolFixtures;
-use App\DataFixtures\SchoolTypeFixtures;
-use App\DataFixtures\UserDelegateRequestFixtures;
-use App\DataFixtures\UserDelegateSchoolFixtures;
 use App\DataFixtures\UserFixtures;
 use App\Entity\DamagedEducator;
-use App\Repository\DamagedEducatorPeriodRepository;
 use App\Repository\DamagedEducatorRepository;
-use App\Repository\UserDelegateSchoolRepository;
 use App\Repository\UserRepository;
 use Liip\TestFixturesBundle\Services\DatabaseToolCollection;
 use Liip\TestFixturesBundle\Services\DatabaseTools\AbstractDatabaseTool;
@@ -26,9 +18,7 @@ class PanelControllerTest extends WebTestCase
     private KernelBrowser $client;
     private AbstractDatabaseTool $databaseTool;
     private ?UserRepository $userRepository;
-    private ?DamagedEducatorPeriodRepository $damagedEducatorPeriodRepository;
     private ?DamagedEducatorRepository $damagedEducatorRepository;
-    private ?UserDelegateSchoolRepository $userDelegateSchoolRepository;
 
     protected function setUp(): void
     {
@@ -40,20 +30,12 @@ class PanelControllerTest extends WebTestCase
 
         $this->userRepository = $container->get(UserRepository::class);
         $this->damagedEducatorRepository = $container->get(DamagedEducatorRepository::class);
-        $this->damagedEducatorPeriodRepository = $container->get(DamagedEducatorPeriodRepository::class);
-        $this->userDelegateSchoolRepository = $container->get(UserDelegateSchoolRepository::class);
     }
 
     private function loadFixtures(): void
     {
         $this->databaseTool->loadFixtures([
             UserFixtures::class,
-            CityFixtures::class,
-            SchoolTypeFixtures::class,
-            SchoolFixtures::class,
-            UserDelegateRequestFixtures::class,
-            UserDelegateSchoolFixtures::class,
-            DamagedEducatorPeriodFixtures::class,
             DamagedEducatorFixtures::class,
         ]);
     }
@@ -74,30 +56,11 @@ class PanelControllerTest extends WebTestCase
         $this->client->loginUser($user);
     }
 
-    public function testDamagedEducatorPeriod(): void
-    {
-        $this->loginAsDelegate();
-        $this->client->request('GET', '/delegat/odabir-perioda');
-
-        // Just check that the page loads with 200 OK status
-        $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
-    }
-
-    public function testRedirectWithoutPeriodParameter(): void
-    {
-        $this->loginAsDelegate();
-        $this->client->request('GET', '/delegat/osteceni');
-
-        $this->assertTrue($this->client->getResponse()->isRedirect());
-        $this->assertStringContainsString('/delegat/odabir-perioda', $this->client->getResponse()->headers->get('Location'));
-    }
-
     public function testDamagedEducatorsList(): void
     {
         $this->loginAsDelegate();
 
-        $period = $this->damagedEducatorPeriodRepository->findOneBy(['active' => true]);
-        $crawler = $this->client->request('GET', '/delegat/osteceni', ['period' => $period->getId()]);
+        $crawler = $this->client->request('GET', '/delegat/osteceni');
 
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
         $this->assertCount(2, $crawler->filter('table'));
@@ -108,8 +71,7 @@ class PanelControllerTest extends WebTestCase
     {
         $this->loginAsDelegate();
 
-        $period = $this->damagedEducatorPeriodRepository->findOneBy(['active' => true]);
-        $this->client->request('GET', '/delegat/prijavi-ostecenog', ['period' => $period->getId()]);
+        $this->client->request('GET', '/delegat/prijavi-ostecenog');
 
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
         $this->assertSelectorExists('form');
@@ -119,15 +81,9 @@ class PanelControllerTest extends WebTestCase
     {
         $this->loginAsDelegate();
 
-        $period = $this->damagedEducatorPeriodRepository->findOneBy(['active' => true]);
-        $user = $this->userRepository->findOneBy(['email' => 'delegat@gmail.com']);
-        $userDelegateSchool = $this->userDelegateSchoolRepository->findOneBy(['user' => $user]);
-
-        $crawler = $this->client->request('GET', '/delegat/prijavi-ostecenog?period='.$period->getId());
+        $crawler = $this->client->request('GET', '/delegat/prijavi-ostecenog');
         $form = $crawler->filter('form[name="damaged_educator_edit"]')->form([
             'damaged_educator_edit[name]' => 'Milan Janjic',
-            'damaged_educator_edit[school]' => $userDelegateSchool->getSchool()->getId(),
-            'damaged_educator_edit[city]' => $userDelegateSchool->getSchool()->getCity()->getId(),
             'damaged_educator_edit[amount]' => 10000,
             'damaged_educator_edit[accountNumber]' => '265104031000361092',
         ]);
@@ -144,17 +100,13 @@ class PanelControllerTest extends WebTestCase
     {
         $this->loginAsDelegate();
 
-        $period = $this->damagedEducatorPeriodRepository->findOneBy([]);
-        $user = $this->userRepository->findOneBy(['email' => 'delegat@gmail.com']);
-        $userDelegateSchool = $this->userDelegateSchoolRepository->findOneBy(['user' => $user]);
-        $damagedEducator = $this->damagedEducatorRepository->findOneBy(['school' => $userDelegateSchool->getSchool(), 'period' => $period]);
+        $damagedEducator = $this->damagedEducatorRepository->findOneBy([]);
 
         $crawler = $this->client->request('GET', '/delegat/osteceni/'.$damagedEducator->getId().'/izmeni-podatke');
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
 
         $form = $crawler->filter('form[name="damaged_educator_edit"]')->form([
             'damaged_educator_edit[name]' => 'Milan Janjic',
-            'damaged_educator_edit[school]' => $userDelegateSchool->getSchool()->getId(),
             'damaged_educator_edit[amount]' => 50000,
             'damaged_educator_edit[accountNumber]' => '265104031000361092',
         ]);
@@ -173,11 +125,7 @@ class PanelControllerTest extends WebTestCase
     public function testDeleteDamagedEducatorForm(): void
     {
         $this->loginAsDelegate();
-
-        $period = $this->damagedEducatorPeriodRepository->findOneBy([]);
-        $user = $this->userRepository->findOneBy(['email' => 'delegat@gmail.com']);
-        $userDelegateSchool = $this->userDelegateSchoolRepository->findOneBy(['user' => $user]);
-        $damagedEducator = $this->damagedEducatorRepository->findOneBy(['school' => $userDelegateSchool->getSchool(), 'period' => $period]);
+        $damagedEducator = $this->damagedEducatorRepository->findOneBy([]);
 
         $crawler = $this->client->request('GET', '/delegat/osteceni/'.$damagedEducator->getId().'/brisanje');
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());

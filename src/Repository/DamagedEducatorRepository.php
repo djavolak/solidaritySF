@@ -3,8 +3,6 @@
 namespace App\Repository;
 
 use App\Entity\DamagedEducator;
-use App\Entity\DamagedEducatorPeriod;
-use App\Entity\School;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Tools\Pagination\Paginator;
@@ -22,24 +20,24 @@ class DamagedEducatorRepository extends ServiceEntityRepository
         parent::__construct($registry, DamagedEducator::class);
     }
 
-//    public function getFromUser(User $user): array
-//    {
-//        $userDelegateSchools = $user->getUserDelegateSchools();
-//
-//        $schoolIds = [];
-//        foreach ($userDelegateSchools as $userDelegateSchool) {
-//            $schoolIds[] = $userDelegateSchool->getSchool()->getId();
-//        }
-//
-//        return $this->findBy([
-//            'school' => $schoolIds,
-//        ]);
-//    }
+    //    public function getFromUser(User $user): array
+    //    {
+    //        $userDelegateSchools = $user->getUserDelegateSchools();
+    //
+    //        $schoolIds = [];
+    //        foreach ($userDelegateSchools as $userDelegateSchool) {
+    //            $schoolIds[] = $userDelegateSchool->getSchool()->getId();
+    //        }
+    //
+    //        return $this->findBy([
+    //            'school' => $schoolIds,
+    //        ]);
+    //    }
 
     public function search(array $criteria, int $page = 1, int $limit = 50): array
     {
         $qb = $this->createQueryBuilder('e');
-//        $qb->leftJoin('e.school', 's');
+        //        $qb->leftJoin('e.school', 's');
 
         if (isset($criteria['period'])) {
             $qb->andWhere('e.period = :period')
@@ -56,25 +54,25 @@ class DamagedEducatorRepository extends ServiceEntityRepository
                 ->setParameter('status', $criteria['status']);
         }
 
-//        if (!empty($criteria['city'])) {
-//            $qb->andWhere('s.city = :city')
-//                ->setParameter('city', $criteria['city']);
-//        }
-//
-//        if (!empty($criteria['school'])) {
-//            $qb->andWhere('e.school = :school')
-//                ->setParameter('school', $criteria['school']);
-//        }
+        //        if (!empty($criteria['city'])) {
+        //            $qb->andWhere('s.city = :city')
+        //                ->setParameter('city', $criteria['city']);
+        //        }
+        //
+        //        if (!empty($criteria['school'])) {
+        //            $qb->andWhere('e.school = :school')
+        //                ->setParameter('school', $criteria['school']);
+        //        }
 
         if (!empty($criteria['status'])) {
             $qb->andWhere('e.status = :status')
                 ->setParameter('status', $criteria['status']);
         }
 
-//        if (isset($criteria['schools'])) {
-//            $qb->andWhere('e.school IN (:schools)')
-//                ->setParameter('schools', $criteria['schools']);
-//        }
+        //        if (isset($criteria['schools'])) {
+        //            $qb->andWhere('e.school IN (:schools)')
+        //                ->setParameter('schools', $criteria['schools']);
+        //        }
 
         if (!empty($criteria['accountNumber'])) {
             $criteria['accountNumber'] = str_replace('-', '', $criteria['accountNumber']);
@@ -142,29 +140,4 @@ class DamagedEducatorRepository extends ServiceEntityRepository
             return (int) $qb->getQuery()->getSingleScalarResult();
         }, $useCache ? 1.0 : INF);
     }
-
-    public function getTotalsByPeriod(DamagedEducatorPeriod $period, ?School $school): int
-    {
-        $qb = $this->createQueryBuilder('de');
-        $qb = $qb->select('COUNT(DISTINCT de.accountNumber)')
-            ->andWhere('de.period = :period')
-            ->setParameter('period', $period);
-
-//        if ($school) {
-//            $qb->andWhere('de.school = :school')
-//                ->setParameter('school', $school);
-//        }
-
-        return (int) $qb->getQuery()->getSingleScalarResult();
-    }
-
-//    public function getTotalsSchoolByPeriod(DamagedEducatorPeriod $period): int
-//    {
-//        $qb = $this->createQueryBuilder('e');
-//        $qb = $qb->select('COUNT(DISTINCT e.school)')
-//            ->andWhere('e.period = :period')
-//            ->setParameter('period', $period);
-//
-//        return (int) $qb->getQuery()->getSingleScalarResult();
-//    }
 }

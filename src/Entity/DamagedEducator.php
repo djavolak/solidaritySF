@@ -37,9 +37,9 @@ class DamagedEducator
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-//    #[ORM\ManyToOne(inversedBy: 'damagedEducators')]
-//    #[ORM\JoinColumn(nullable: false)]
-//    private ?School $school = null;
+    //    #[ORM\ManyToOne(inversedBy: 'damagedEducators')]
+    //    #[ORM\JoinColumn(nullable: false)]
+    //    private ?School $school = null;
 
     #[Assert\NotBlank(message: 'Cifra je obavezno polje')]
     #[ORM\Column]
@@ -52,6 +52,9 @@ class DamagedEducator
 
     #[ORM\Column]
     private ?int $status = self::STATUS_NEW;
+
+    #[ORM\Column(type: Types::STRING, nullable: true)]
+    private ?string $city = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $statusComment = null;
@@ -72,13 +75,13 @@ class DamagedEducator
     #[ORM\OneToMany(targetEntity: Transaction::class, mappedBy: 'damagedEducator')]
     private Collection $transactions;
 
-//    #[ORM\ManyToOne(inversedBy: 'damagedEducators')]
-//    #[ORM\JoinColumn(nullable: false)]
-//    private ?DamagedEducatorPeriod $period = null;
+    //    #[ORM\ManyToOne(inversedBy: 'damagedEducators')]
+    //    #[ORM\JoinColumn(nullable: false)]
+    //    private ?DamagedEducatorPeriod $period = null;
 
-//    #[Assert\NotBlank(message: 'Grad je obavezno polje')]
-//    #[ORM\ManyToOne]
-//    private ?City $city = null;
+    //    #[Assert\NotBlank(message: 'Grad je obavezno polje')]
+    //    #[ORM\ManyToOne]
+    //    private ?City $city = null;
 
     public function __construct()
     {
@@ -88,6 +91,16 @@ class DamagedEducator
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getCity(): ?string
+    {
+        return $this->city;
+    }
+
+    public function setCity(?string $city): void
+    {
+        $this->city = $city;
     }
 
     public function getName(): ?string
@@ -102,17 +115,17 @@ class DamagedEducator
         return $this;
     }
 
-//    public function getSchool(): ?School
-//    {
-//        return $this->school;
-//    }
-//
-//    public function setSchool(?School $school): static
-//    {
-//        $this->school = $school;
-//
-//        return $this;
-//    }
+    //    public function getSchool(): ?School
+    //    {
+    //        return $this->school;
+    //    }
+    //
+    //    public function setSchool(?School $school): static
+    //    {
+    //        $this->school = $school;
+    //
+    //        return $this;
+    //    }
 
     public function getAmount(): ?int
     {
@@ -209,17 +222,17 @@ class DamagedEducator
         return $this->transactions;
     }
 
-//    public function getPeriod(): ?DamagedEducatorPeriod
-//    {
-//        return $this->period;
-//    }
-//
-//    public function setPeriod(?DamagedEducatorPeriod $period): static
-//    {
-//        $this->period = $period;
-//
-//        return $this;
-//    }
+    //    public function getPeriod(): ?DamagedEducatorPeriod
+    //    {
+    //        return $this->period;
+    //    }
+    //
+    //    public function setPeriod(?DamagedEducatorPeriod $period): static
+    //    {
+    //        $this->period = $period;
+    //
+    //        return $this;
+    //    }
 
     public function allowToViewTransactions(): bool
     {
@@ -241,17 +254,17 @@ class DamagedEducator
         return self::STATUS_DELETED === $this->status;
     }
 
-//    public function getCity(): ?City
-//    {
-//        return $this->city;
-//    }
-//
-//    public function setCity(?City $city): static
-//    {
-//        $this->city = $city;
-//
-//        return $this;
-//    }
+    //    public function getCity(): ?City
+    //    {
+    //        return $this->city;
+    //    }
+    //
+    //    public function setCity(?City $city): static
+    //    {
+    //        $this->city = $city;
+    //
+    //        return $this;
+    //    }
 
     public function isStatusDeleted(): bool
     {

@@ -39,7 +39,6 @@ class CacheNumbersCommand extends Command
         $this->damagedEducatorRepository->getSumAmount(false);
         $this->damagedEducatorRepository->getTotals(false);
         $this->transactionRepository->getTotalActiveDonors(false);
-        $this->transactionRepository->getSchoolWithConfirmedTransactions(false);
 
         $io->success('Command finished at '.date('Y-m-d H:i:s'));
 

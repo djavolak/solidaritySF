@@ -3,13 +3,13 @@
 {% block body %}
     {% import "macro.html.twig" as macro %}
     {{ macro.tutorial() }}
-    {{ macro.back('delegate_damaged_educator_list', { 'period': period.id }) }}
+    {{ macro.back('delegate_damaged_educator_list') }}
 
     <div class="card card-lg bg-base-100 shadow m-4 mt-0">
         <div class="card-body">
             <h2 class="card-title mb-4 info-step1">
                 <span class="ti ti-credit-card-pay text-3xl"></span>
-                Spisak svih instrukcija za proveru za {{ period|format_period }}
+                Spisak svih instrukcija za proveru
             </h2>
 
             {{ include('flashes.html.twig') }}
@@ -148,9 +148,9 @@
             });
 
             loadDriver([
-                { element: '.info-step1', popover: { title: 'Spisak svih instrukcija za proveru', description: 'Ovaj deo pokazuje spisak svih instrukcija za proveru za izabrani period. Verovatno postoje još instrukcija, ali one ne čekaju donatora ili su već rešene. Na stranici možete da nađete samo instrukcije koje čekaju vašu akciju.' } },
+                { element: '.info-step1', popover: { title: 'Spisak svih instrukcija za proveru', description: 'Ovaj deo pokazuje spisak svih instrukcija za proveru. Verovatno postoje još instrukcija, ali one ne čekaju donatora ili su već rešene. Na stranici možete da nađete samo instrukcije koje čekaju vašu akciju.' } },
                 { element: '.info-step2', popover: { title: 'Promena statusa', description: 'Na stranici za svaku instrukciju postoji opcija za promenu statusa.' } },
-                { element: '.info-step3', popover: { title: 'Sačuvaj sve izmene', description: 'Instrukcije se sačuvavaju tek kada pritisnete na ovo dugme, svaka instrukcija koja bude imala prazan status neće biti promenjena.' } },
+                { element: '.info-step3', popover: { title: 'Sačuvaj sve izmene', description: 'Instrukcije se sačuvavaju tek kada pritisnete ovo dugme, svaka instrukcija koja bude imala prazan status neće biti promenjena.' } },
             ]);
         });
     </script>

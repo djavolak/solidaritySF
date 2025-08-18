@@ -2,14 +2,8 @@
 
 namespace App\Tests\Controller\Donor;
 
-use App\DataFixtures\CityFixtures;
 use App\DataFixtures\DamagedEducatorFixtures;
-use App\DataFixtures\DamagedEducatorPeriodFixtures;
-use App\DataFixtures\SchoolFixtures;
-use App\DataFixtures\SchoolTypeFixtures;
 use App\DataFixtures\TransactionFixtures;
-use App\DataFixtures\UserDelegateRequestFixtures;
-use App\DataFixtures\UserDelegateSchoolFixtures;
 use App\DataFixtures\UserDonorFixtures;
 use App\DataFixtures\UserFixtures;
 use App\Repository\TransactionRepository;
@@ -44,12 +38,6 @@ class TransactionControllerTest extends WebTestCase
     {
         $this->databaseTool->loadFixtures([
             UserFixtures::class,
-            CityFixtures::class,
-            DamagedEducatorPeriodFixtures::class,
-            SchoolTypeFixtures::class,
-            SchoolFixtures::class,
-            UserDelegateRequestFixtures::class,
-            UserDelegateSchoolFixtures::class,
             UserDonorFixtures::class,
             DamagedEducatorFixtures::class,
             TransactionFixtures::class,

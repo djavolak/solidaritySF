@@ -3,22 +3,15 @@
 namespace App\Form\Admin;
 
 use App\Entity\DamagedEducator;
-use App\Entity\DamagedEducatorPeriod;
 use App\Entity\Transaction;
 use App\Validator\UserDonorExists;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\QueryBuilder;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
-use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class TransactionNewType extends AbstractType
@@ -47,7 +40,7 @@ class TransactionNewType extends AbstractType
                     return $damagedEducator ? $damagedEducator->getName().' ('.$damagedEducator->getAccountNumber().')' : '';
                 },
                 'placeholder' => '',
-//                'disabled' => true,
+                //                'disabled' => true,
             ])
             ->add('amount', IntegerType::class, [
                 'label' => 'Iznos',

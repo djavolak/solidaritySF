@@ -43,7 +43,7 @@ class LogNumbersCommand extends Command
         $sumAmountMonthlyDonors = $this->userDonorRepository->sumAmountMonthlyDonors();
         $sumAmountNonMonthlyDonors = $this->userDonorRepository->sumAmountNonMonthlyDonors();
         $totalDelegates = $this->userRepository->getTotalDelegates();
-        $totalActiveSchools = 0;
+        //        $totalActiveSchools = 0;
 
         $entity = $this->entityManager->getRepository(LogNumber::class)->findOneBy(['createdAt' => new \DateTime()]);
         if (!$entity) {
@@ -56,7 +56,7 @@ class LogNumbersCommand extends Command
         $entity->setSumAmountMonthlyDonors($sumAmountMonthlyDonors);
         $entity->setSumAmountNonMonthlyDonors($sumAmountNonMonthlyDonors);
         $entity->setTotalDelegates($totalDelegates);
-        $entity->setTotalActiveSchools($totalActiveSchools);
+        //        $entity->setTotalActiveSchools($totalActiveSchools);
         $this->entityManager->persist($entity);
         $this->entityManager->flush();
 

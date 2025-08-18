@@ -5,10 +5,7 @@ namespace App\DataFixtures;
 use App\DataFixtures\Data\Amounts;
 use App\DataFixtures\Data\Names;
 use App\Entity\DamagedEducator;
-use App\Entity\DamagedEducatorPeriod;
-use App\Entity\School;
 use App\Entity\User;
-use App\Entity\UserDelegateRequest;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 use Doctrine\ORM\EntityManagerInterface;
@@ -72,11 +69,8 @@ class DamagedEducatorFixtures extends Fixture implements FixtureGroupInterface
         // Get all confirmed delegates
         $delegates = $this->entityManager->getRepository(User::class)
             ->createQueryBuilder('u')
-            ->join('u.userDelegateRequest', 'dr')
             ->where('u.roles LIKE :role')
-            ->andWhere('dr.status = :status')
             ->setParameter('role', '%ROLE_DELEGATE%')
-            ->setParameter('status', UserDelegateRequest::STATUS_CONFIRMED)
             ->getQuery()
             ->getResult();
 
@@ -84,48 +78,21 @@ class DamagedEducatorFixtures extends Fixture implements FixtureGroupInterface
             throw new \RuntimeException('No confirmed delegates found!');
         }
 
-        $schools = $this->entityManager->getRepository(School::class)->findAll();
-        $periods = $this->entityManager->getRepository(DamagedEducatorPeriod::class)->findAll();
+        // Generate 1-30 educators per school
+        $count = mt_rand(1, 30);
 
-        // Ensure at least one DamagedEducator for delegat@gmail.com, their school, and the active period
-        $coreDelegate = $this->entityManager->getRepository(User::class)->findOneBy(['email' => 'delegat@gmail.com']);
-        $activePeriod = $this->entityManager->getRepository(DamagedEducatorPeriod::class)->findOneBy(['active' => true]);
-        $userDelegateSchool = null;
-        if ($coreDelegate && $activePeriod) {
-            $userDelegateSchool = $this->entityManager->getRepository(\App\Entity\UserDelegateSchool::class)
-                ->findOneBy(['user' => $coreDelegate]);
-            if ($userDelegateSchool) {
-                $educator = new DamagedEducator();
-                $educator->setName($this->generateName());
-                $educator->setSchool($userDelegateSchool->getSchool());
-                $educator->setCity($userDelegateSchool->getSchool()->getCity());
-                $educator->setAmount(Amounts::generate(30000, null, 15, 50000));
-                $educator->setAccountNumber($this->generateAccountNumber());
-                $educator->setPeriod($activePeriod);
-                $educator->setCreatedBy($coreDelegate);
-                $manager->persist($educator);
-            }
-        }
+        for ($i = 0; $i < $count; ++$i) {
+            $educator = new DamagedEducator();
+            $educator->setName($this->generateName());
+            $educator->setCity('Test City');
+            $educator->setAmount(Amounts::generate(30000, null, 15, 50000));
+            $educator->setAccountNumber($this->generateAccountNumber());
 
-        foreach ($schools as $school) {
-            // Generate 1-30 educators per school
-            $count = mt_rand(1, 30);
+            // Pick random confirmed delegate
+            $delegate = $delegates[array_rand($delegates)];
+            $educator->setCreatedBy($delegate);
 
-            for ($i = 0; $i < $count; ++$i) {
-                $educator = new DamagedEducator();
-                $educator->setName($this->generateName());
-                $educator->setSchool($school);
-                $educator->setCity($school->getCity());
-                $educator->setAmount(Amounts::generate(30000, null, 15, 50000));
-                $educator->setAccountNumber($this->generateAccountNumber());
-                $educator->setPeriod($periods[array_rand($periods)]);
-
-                // Pick random confirmed delegate
-                $delegate = $delegates[array_rand($delegates)];
-                $educator->setCreatedBy($delegate);
-
-                $manager->persist($educator);
-            }
+            $manager->persist($educator);
         }
 
         $manager->flush();

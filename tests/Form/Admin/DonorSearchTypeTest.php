@@ -36,7 +36,6 @@ class DonorSearchTypeTest extends TypeTestCase
             'firstName' => null,
             'lastName' => null,
             'email' => null,
-            'schoolType' => null,
         ];
 
         $form = $this->factory->create(DonorSearchType::class);

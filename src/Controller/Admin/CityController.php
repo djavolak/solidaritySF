@@ -41,12 +41,12 @@ final class CityController extends AbstractController
     #[Route('/new', name: 'new')]
     public function new(Request $request): Response
     {
-        $schoolType = new City();
-        $form = $this->createForm(CityEditType::class, $schoolType);
+        $city = new City();
+        $form = $this->createForm(CityEditType::class, $city);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->entityManager->persist($schoolType);
+            $this->entityManager->persist($city);
             $this->entityManager->flush();
 
             $this->addFlash('success', 'Dodat je novi grad');

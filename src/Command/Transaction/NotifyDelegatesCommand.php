@@ -5,7 +5,6 @@ namespace App\Command\Transaction;
 use App\Entity\DamagedEducator;
 use App\Entity\Transaction;
 use App\Entity\User;
-use App\Entity\UserDelegateSchool;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -43,30 +42,22 @@ class NotifyDelegatesCommand extends Command
 
         $delegates = $this->getDelegates();
         foreach ($delegates as $delegate) {
-            $schools = $this->entityManager->getRepository(UserDelegateSchool::class)->findBy([
-                'user' => $delegate,
-            ]);
-
             $havePendingTransactions = false;
-            foreach ($schools as $school) {
-                $damagedEducators = $this->entityManager->getRepository(DamagedEducator::class)->findBy([
-                    'school' => $school->getSchool(),
+
+            $damagedEducators = $this->entityManager->getRepository(DamagedEducator::class)->findBy([]);
+            foreach ($damagedEducators as $damagedEducator) {
+                $transactions = $this->entityManager->getRepository(Transaction::class)->findBy([
+                    'damagedEducator' => $damagedEducator,
+                    'status' => [
+                        Transaction::STATUS_WAITING_CONFIRMATION,
+                        Transaction::STATUS_EXPIRED,
+                    ],
                 ]);
 
-                foreach ($damagedEducators as $damagedEducator) {
-                    $transactions = $this->entityManager->getRepository(Transaction::class)->findBy([
-                        'damagedEducator' => $damagedEducator,
-                        'status' => [
-                            Transaction::STATUS_WAITING_CONFIRMATION,
-                            Transaction::STATUS_EXPIRED,
-                        ],
-                    ]);
-
-                    foreach ($transactions as $transaction) {
-                        if ($transaction->allowToChangeStatus()) {
-                            $havePendingTransactions = true;
-                            break 3;
-                        }
+                foreach ($transactions as $transaction) {
+                    if ($transaction->allowToChangeStatus()) {
+                        $havePendingTransactions = true;
+                        break 2;
                     }
                 }
             }

@@ -33,9 +33,6 @@ class LogNumber
     #[ORM\Column]
     private ?int $totalDelegates = null;
 
-    #[ORM\Column]
-    private ?int $totalActiveSchools = null;
-
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $createdAt = null;
 
@@ -125,18 +122,6 @@ class LogNumber
     public function setTotalDelegates(int $totalDelegates): static
     {
         $this->totalDelegates = $totalDelegates;
-
-        return $this;
-    }
-
-    public function getTotalActiveSchools(): ?int
-    {
-        return $this->totalActiveSchools;
-    }
-
-    public function setTotalActiveSchools(int $totalActiveSchools): static
-    {
-        $this->totalActiveSchools = $totalActiveSchools;
 
         return $this;
     }

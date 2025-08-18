@@ -2,40 +2,33 @@
 
 namespace App\Controller\Delegate;
 
-use App\Entity\City;
 use App\Entity\DamagedEducator;
 use App\Entity\Transaction;
 use App\Entity\User;
 use App\Form\DamagedEducatorDeleteType;
 use App\Form\DamagedEducatorEditType;
-use App\Form\DamagedEducatorImportType;
 use App\Form\DamagedEducatorSearchType;
 use App\Form\TransactionChangeStatusType;
-use App\Repository\DamagedEducatorPeriodRepository;
 use App\Repository\DamagedEducatorRepository;
-use App\Repository\SchoolRepository;
 use App\Repository\TransactionRepository;
-use App\Repository\UserDelegateSchoolRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use PhpOffice\PhpSpreadsheet\IOFactory;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 #[IsGranted('ROLE_DELEGATE')]
 #[Route('/delegat', name: 'delegate_damaged_educator_')]
 class DamagedEducatorController extends AbstractController
 {
-    public function __construct(private EntityManagerInterface $entityManager, private DamagedEducatorPeriodRepository $damagedEducatorPeriodRepository, private DamagedEducatorRepository $damagedEducatorRepository, private TransactionRepository $transactionRepository)
+    public function __construct(private EntityManagerInterface $entityManager, private DamagedEducatorRepository $damagedEducatorRepository, private TransactionRepository $transactionRepository)
     {
     }
 
     #[Route('/osteceni', name: 'list')]
-    public function list(Request $request, DamagedEducatorPeriodRepository $damagedEducatorPeriodRepository, DamagedEducatorRepository $damagedEducatorRepository, TransactionRepository $transactionRepository, UserDelegateSchoolRepository $userDelegateSchoolRepository, SchoolRepository $schoolRepository): Response
+    public function list(Request $request, DamagedEducatorRepository $damagedEducatorRepository, TransactionRepository $transactionRepository): Response
     {
         $form = $this->createForm(DamagedEducatorSearchType::class, null, [
             'user' => $this->getUser(),
@@ -47,10 +40,7 @@ class DamagedEducatorController extends AbstractController
             $criteria = $form->getData();
         }
 
-        /** @var User $user */
-        $user = $this->getUser();
-
-        $criteria['schools'] = [];
+        //        $criteria['schools'] = [];
         $isUniversity = false;
         $page = $request->query->getInt('page', 1);
 
@@ -62,7 +52,7 @@ class DamagedEducatorController extends AbstractController
         }
         $statistics = [
             'totalDamagedEducators' => $totalDamagedEducators,
-//            'totalActiveSchools' => $damagedEducatorRepository->getTotalsSchoolByPeriod($period),
+            //            'totalActiveSchools' => $damagedEducatorRepository->getTotalsSchoolByPeriod($period),
             'sumAmountConfirmedTransactions' => $sumAmountConfirmedTransactions,
             'averageAmountPerDamagedEducator' => $averageAmountPerDamagedEducator,
             'schools' => [],
@@ -96,7 +86,7 @@ class DamagedEducatorController extends AbstractController
     }
 
     #[Route('/prijavi-ostecenog', name: 'new')]
-    public function newDamagedEducator(Request $request, DamagedEducatorPeriodRepository $damagedEducatorPeriodRepository, DamagedEducatorRepository $damagedEducatorRepository): Response
+    public function newDamagedEducator(Request $request, DamagedEducatorRepository $damagedEducatorRepository): Response
     {
         $damagedEducator = new DamagedEducator();
         $damagedEducator->setCreatedBy($this->getUser());

@@ -41,20 +41,7 @@ final class DamagedEducatorController extends AbstractController
     #[Route('/list-ajax', name: 'list_ajax')]
     public function index(Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
-        $periodId = $request->query->get('period-id');
-        if (empty($periodId)) {
-            return $this->json([]);
-        }
-
-        $schoolId = $request->query->get('school-id');
-        if (empty($schoolId)) {
-            return $this->json([]);
-        }
-
-        $damagedEducators = $entityManager->getRepository(DamagedEducator::class)->findBy([
-            'period' => $periodId,
-            'school' => $schoolId,
-        ]);
+        $damagedEducators = $entityManager->getRepository(DamagedEducator::class)->findBy([]);
 
         $items = [];
         foreach ($damagedEducators as $damagedEducator) {

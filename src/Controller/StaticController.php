@@ -25,12 +25,4 @@ class StaticController extends AbstractController
     {
         return $this->render('static/transaction_status.html.twig');
     }
-
-    #[Route('/umrezeno-po-skolama', name: 'schools')]
-    public function schools(): Response
-    {
-        return $this->render('static/schools.html.twig', [
-            'schools' => $this->transactionRepository->getSchoolWithConfirmedTransactions(true),
-        ]);
-    }
 }

@@ -3,7 +3,6 @@
 namespace App\Tests\Validator;
 
 use App\Entity\DamagedEducator;
-use App\Entity\DamagedEducatorPeriod;
 use App\Repository\DamagedEducatorRepository;
 use App\Validator\DuplicateDamagedEducator;
 use App\Validator\DuplicateDamagedEducatorValidator;
@@ -92,7 +91,6 @@ class DuplicateDamagedEducatorValidatorTest extends TestCase
         $idProperty->setValue($educator, $id);
 
         $educator->setAccountNumber($accountNumber);
-        $educator->setPeriod(new DamagedEducatorPeriod());
 
         return $educator;
     }

@@ -2,9 +2,7 @@
 
 namespace App\Form\Admin;
 
-use App\Entity\City;
 use App\Entity\DamagedEducator;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -17,27 +15,11 @@ class DamagedEducatorEditType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('period', TextType::class, [
-                'disabled' => true,
-                'mapped' => false,
-                'label' => 'Period',
-                'data' => $options['data']->getPeriod()?->getChoiceLabel(),
-            ])
             ->add('name', TextType::class, [
                 'label' => 'Ime',
             ])
-            ->add('school', TextType::class, [
-                'disabled' => true,
-                'mapped' => false,
-                'label' => 'Škola',
-                'data' => $options['data']->getSchool()?->getName(),
-            ])
-            ->add('city', EntityType::class, [
-                'class' => City::class,
-                'placeholder' => '',
+            ->add('city', TextType::class, [
                 'label' => 'Grad (Prebivalište oštećenog)',
-                'choice_value' => 'id',
-                'choice_label' => 'name',
             ])
             ->add('amount', IntegerType::class, [
                 'label' => 'Cifra',

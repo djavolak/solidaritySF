@@ -111,7 +111,7 @@ class TransactionController extends AbstractController
         $paymentData = [
             'bankAccountNumber' => $transaction->getAccountNumber(),
             'payeeName' => $transaction->getDamagedEducator()->getName(),
-            'payeeCityName' => $transaction->getDamagedEducator()->getCity()->getName(),
+            'payeeCityName' => $transaction->getDamagedEducator()->getCity(),
             'amount' => number_format($transaction->getAmount(), 2, ',', ''),
             'paymentCode' => '289',
             'paymentPurpose' => 'Transakcija po nalogu građana',

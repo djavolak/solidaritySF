@@ -2,11 +2,9 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\DamagedEducatorPeriod;
 use App\Entity\Transaction;
 use App\Repository\DamagedEducatorRepository;
 use App\Repository\TransactionRepository;
-use App\Repository\UserDelegateSchoolRepository;
 use App\Repository\UserDonorRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -18,7 +16,7 @@ use Symfony\Component\Routing\Attribute\Route;
 final class HomeController extends AbstractController
 {
     #[Route('/', name: 'home')]
-    public function index(EntityManagerInterface $entityManager, UserDonorRepository $userDonorRepository, UserRepository $userRepository, UserDelegateSchoolRepository $userDelegateSchoolRepository, TransactionRepository $transactionRepository, DamagedEducatorRepository $damagedEducatorRepository): Response
+    public function index(EntityManagerInterface $entityManager, UserDonorRepository $userDonorRepository, UserRepository $userRepository, TransactionRepository $transactionRepository, DamagedEducatorRepository $damagedEducatorRepository): Response
     {
         $totalDonors = $userDonorRepository->getTotal();
         $totalActiveDonors = $transactionRepository->getTotalActiveDonors(false);

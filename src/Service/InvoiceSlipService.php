@@ -19,7 +19,7 @@ class InvoiceSlipService
      */
     public function prepareSlipData(Transaction $transaction, User $user): array
     {
-        $cityName = $transaction->getDamagedEducator()->getCity()->getName();
+        $cityName = $transaction->getDamagedEducator()->getCity();
 
         return [
             'payer' => $user->getFullName(),
@@ -28,7 +28,7 @@ class InvoiceSlipService
             'amount' => number_format($transaction->getAmount(), 2, ',', ''),
             'account' => $transaction->getAccountNumber(),
             'reference' => $transaction->getReferenceCode(),
-            'place' => '',
+            'place' => $cityName,
             'date' => $transaction->getCreatedAt() ? $transaction->getCreatedAt()->format('d.m.Y') : '',
             'model' => '00',
             'currency' => 'RSD',

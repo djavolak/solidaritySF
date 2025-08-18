@@ -20,10 +20,6 @@
                         Ime
                     </th>
                     <th>
-                        <span class="ti ti-link text-xl"></span>
-                        Povezanih škola
-                    </th>
-                    <th>
                         <span class="ti ti-calendar-event text-xl"></span>
                         Registrovan
                     </th>
@@ -40,7 +36,6 @@
                             {{ delegate.email }}
                         </a>
                     </td>
-                    <td>{{ delegate.userDelegateSchools|length }}</td>
                     <td class="whitespace-nowrap">
                         {{ delegate.createdAt|date('H:i d.m.Y.') }}
                     </td>
